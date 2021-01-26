@@ -2,10 +2,11 @@
 ##### Для запуска необходимо уставить модули:
 - [requests](https://pypi.org/project/requests/) 
 	- pip install requests
-- [SQLAlchemy](https://pypi.org/project/SQLAlchemy/)
-	- pip install SQLAlchemy
 - [Django](https://pypi.org/project/Django/ "Django") 
 	- pip install Django
+	
+- [SQLAlchemy](https://pypi.org/project/SQLAlchemy/) (опционально, см.пояснения в explanations.txt)
+	- pip install SQLAlchemy
 	
 ##### Запуск проекта:
 - Запуск клиента:
@@ -38,10 +39,12 @@
 ##### You need to install module:
 - [requests](https://pypi.org/project/requests/) 
 	- pip install requests
-- [SQLAlchemy](https://pypi.org/project/SQLAlchemy/)
-	- pip install SQLAlchemy
 - [Django](https://pypi.org/project/Django/ "Django") 
 	- pip install Django
+	  
+- [SQLAlchemy](https://pypi.org/project/SQLAlchemy/)
+(optionally, see explanations.txt for explanation)
+	- pip install SQLAlchemy
 	
 ##### Launch of the project:
 - Launching the client:
