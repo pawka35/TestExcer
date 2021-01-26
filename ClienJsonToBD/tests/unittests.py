@@ -4,7 +4,8 @@
 
 import unittest
 from ClienJsonToBD.main import MainClass
-from db.DBWork import WorkWithBD as WkBD
+#from db.DBWork import WorkWithBD as WkBD
+from db.NotOrm_DBWork import WorkWithBD as WkBD
 
 
 # тесты для методов класса файла main.py

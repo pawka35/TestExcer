@@ -1,7 +1,9 @@
 import requests
 import sys
-from db.DBWork import *
+# from db.DBWork import *
+from db.NotOrm_DBWork import *
 import configparser
+import os
 sys.path.append('..')
 
 
