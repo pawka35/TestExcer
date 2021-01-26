@@ -1,0 +1,45 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% block title%}
+  {% if single_user %}
+    User`s posts
+    {% else %}
+    All Posts
+  {% endif %}
+{% endblock %}
+
+{% block content%}
+<div class="m-3 ">
+  {% if single_user %}  
+   <div class="mb-3">  
+      <a href="/" class="btn btn-primary btn-sm ">All posts</a> 
+    </div>
+  {% endif %}
+  <div>
+    {% include 'main/pagination.html' %}
+  </div>
+<table class="table table-bordered table-sm">
+  <thead >
+    <tr class="table-primary">
+      <th scope="col" class="align-center">Имя пользователя</th>
+      <th scope="col">Тема поста</th>
+      <th scope="col">Текст поста</th>
+    </tr>
+  </thead>
+  <tbody id="table_data">
+     {% for el in blog_list %}
+     <tr>
+      <td class='mx-auto username' data-toggle='modal' data-target='#modal_window'><a href='#'>{{el.userid}}</a></td>
+      <td> {{el.title}}</td>
+      <td>{{el.body}}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+<div>
+  {% include 'main/pagination.html' %}
+</div>
+</div>
+{% include 'main/_modal_window.html' %}
+<script src = "{%static 'main/js/main.js' %}"></script>
+{% endblock %}

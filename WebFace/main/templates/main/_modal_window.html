@@ -1,0 +1,132 @@
+<div
+  class="modal fade"
+  id="modal_window"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mod_title"><u>Info about</u>: </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="mod_body">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row">Name</th>
+              <td id="tab_name" colspan="2"></td>
+            </tr>
+            <tr>
+              <th scope="row">Username</th>
+              <td id="tab_username" colspan="2"></td>
+            </tr>
+            <tr>
+              <th scope="row">Username</th>
+              <td id="tab_email" colspan="2"></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <a
+                  href="#"
+                  class="badge badge-info"
+                  data-toggle="collapse"
+                  data-target="#address_info"
+                  aria-expanded="false"
+                  >Show address info</a
+                >
+              </td>
+            </tr>
+            <tr class="collapse" id="address_info">
+              <td colspan="2">
+                <table>
+                  <tr>
+                    <th scope="row" rowspan="5">Address</th>
+                    <td>Zipcode</td>
+                    <td id="addr_zipcode"></td>
+                  </tr>
+                  <tr>
+                    <td>City</td>
+                    <td id="addr_city"></td>
+                  </tr>
+                  <tr>
+                    <td>Street</td>
+                    <td id="addr_street"></td>
+                  </tr>
+                  <tr>
+                    <td>Suite</td>
+                    <td id="addr_suite"></td>
+                  </tr>
+                  <tr>
+                    <td>Geo coordinates</td>
+                    <td>
+                      <table class="table-sm">
+                        <tr>
+                          <td>Latitude</td>
+                          <td>Longitude</td>
+                        </tr>
+                        <tr>
+                          <td id="geo_lat"></td>
+                          <td id="geo_lng"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <a
+                  href="#"
+                  class="badge badge-info"
+                  data-toggle="collapse"
+                  data-target="#company_info"
+                  aria-expanded="false"
+                  >Show info about company</a
+                >
+              </td>
+            </tr>
+            <tr class="collapse" id="company_info">
+              <td colspan="2">
+                <table>
+                  <tr>
+                    <th scope="row" rowspan="3">Company</th>
+                    <td>Name</td>
+                    <td id="com_name"></td>
+                  </tr>
+                  <tr>
+                    <td>Catch phrase</td>
+                    <td id="com_phrase"></td>
+                  </tr>
+                  <tr>
+                    <td>Bs</td>
+                    <td id="com_bs"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center">
+                <button value="" class="btn btn-info btn-sm" id="show_user_posts"> Show all user posts </button>
+                
+              </td>
+            
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
