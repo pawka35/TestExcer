@@ -76,8 +76,8 @@ class WorkWithBD:
         else:
             # делаем запрос на выборку из бд строки с аналогичными параметрами поста (кроме id)
             # для исключения случаем повторного занесения информации
-            find_post = self.cursor.execute(f"select id from Posts where userId={new_post.userId} and "
-                                            f"title='{new_post.title}' and body='{new_post.body}';")
+            find_post = self.__find_select(new_post)
+
             self.__check_result(find_post, new_post)  # отправляет результат запроса на обработку
 
     def new_user_to_bd(self, user):
@@ -93,9 +93,7 @@ class WorkWithBD:
         user = Users(user)
         user.company = company
         user.address = address
-        find_user = self.cursor.execute(f"select id from Users where name='{user.name}' and username='{user.username}'"
-                                        f"and phone='{user.phone}' and website='{user.website}' "
-                                        f"and email = '{user.email}' and company={company} and address={address}")
+        find_user = self.__find_select(user)
 
         self.__check_result(find_user, user)  # отправляет результат запроса на обработку
 
@@ -108,9 +106,8 @@ class WorkWithBD:
         comp = Company(company)
         # делаем запрос на выборку из бд строки с аналогичными параметрами компании (кроме id)
         # для исключения случаем повторного занесения информации
-        result = self.cursor.execute(
-            f"select id from Company where name='{comp.name}' and catchPhrase='{comp.catchPhrase}'"
-            f" and bs='{comp.bs}';")
+        result = self.__find_select(comp)
+
         return self.__check_result(result, comp)  # отправляем результат запроса на обработку
 
     def __add_new_address(self, address):
@@ -122,9 +119,7 @@ class WorkWithBD:
         addr = Address(address)
         # т.к. к таблица Address имеет первичный ключ на таблицу Geo(геокоординаты), заполнием сначала её
         addr.geo = self.__add_new_geo(address['geo'])
-        result = self.cursor.execute(
-            f"select id from Address where street='{addr.street}' and suite='{addr.suite}'"
-            f" and zipcode='{addr.zipcode}' and geo={addr.geo} and city='{addr.city}';")
+        result = self.__find_select(addr)
         return self.__check_result(result, addr)  # отправляе результат запроса на обработку
 
     def __add_new_geo(self, geo):
@@ -136,44 +131,42 @@ class WorkWithBD:
         geopos = Geo(geo)
         # делаем запрос на выборку из бд строки с аналогичными параметрами координат (кроме id)
         # для исключения случаем повторного занесения информации
-        result = self.cursor.execute(f"select id from Geo where lat={geopos.lat} and lng={geopos.lng};")
+        result = self.__find_select(geopos)
         return self.__check_result(result, geopos)  # отправляе результат запроса на обработку
+
+    def __find_select(self, record):
+        """
+        Формирование запроса для поиска в БД id записи, у которой совпадают с поступившей все параметры (кроме id)
+        :param record: запись для поиска в БД
+        :return: курсор для поиска
+        """
+        search_str = []
+        for val in record.__dict__:  # переберем все пары ключ:значение полей поступившего объекта
+            search_str.append(f"{val}='{record.__dict__[val]}'")  # формируем пары вида "name=val" для SQL запроса
+        return self.cursor.execute(f"select id from {str(record)} where {' and '.join(search_str)}")
 
     def __check_result(self, result, record):
         """
         Обработка результатов запроса существования записи
-        :param result: рещультат запроса
+        :param result: результат запроса
         :param record: запись
         :return: id добавленной или найденой записи
         """
         res_data = result.fetchall()  # получаем все данные из запроса
         if len(res_data) == 0:  # если результат пуст (нет такой записи), то добавляем запись в бд и получаем ее id
-            #  далее смотрим к какой таблице относится запись и добавляем её с соответствующими полями
-            if str(record) == 'Users':
-                self.cursor.execute(f"INSERT INTO {str(record)}(name,username,phone,website,address,company,email) "
-                                    f"values ('{record.name}','{record.username}',"
-                                    f"'{record.phone}',"
-                                    f"'{record.website}',{record.address},{record.company},'{record.email}')")
-
-            elif str(record) == 'Company':
-                self.cursor.execute(f"insert into {str(record)}(name,catchPhrase,bs) values ('{record.name}',"
-                                    f"'{record.catchPhrase}','{record.bs}');")
-            elif str(record) == 'Geo':
-                self.cursor.execute(f"insert into {str(record)}(lat,lng) values ('{record.lat}',{record.lng});")
-            elif str(record) == 'Address':
-                self.cursor.execute(f"insert into {str(record)}(street,suite,zipcode,geo,city) values "
-                                    f"('{record.street}','{record.suite}','{record.zipcode}',{record.geo},"
-                                    f"'{record.city}');")
-            elif str(record) == 'Posts':
-                self.cursor.execute(f"insert into {str(record)}(userId,title,body) values ({record.userId},"
-                                    f"'{record.title}','{record.body}');")
-            else:
-                raise TypeError(f'Не предусмотрено занесения данных типа {record}. ')
+            row_names, row_values = [], []  # объявляем пустые списки для сбора ключей и значение объекта
+            for val in record.__dict__:  # переберем все пары ключ:значение полей поступившего объекта
+                row_names.append(f'{val} ')  # соберем ключи (будут именами полей БД)
+                row_values.append(f"'{record.__dict__[val]}'")  # соберем значения (будут значениями полей БД)
+            # {str(record)} = мя класса, определяет таблицу для записи
+            # {','.join(row_names) - названия полей класса, определяют поле БД таблицы для записи
+            # {','.join(row_values)} - значения полей класса, определяют значения соотв. полей БД для записи
+            self.cursor.execute(f"INSERT INTO {str(record)}({','.join(row_names)}) values ({','.join(row_values)});")
             row_id = self.cursor.lastrowid
             print(f'{str(record)} id #{row_id} added in bd')
 
         elif len(res_data) == 1:  # если запись существует в БД, получаем ее id
-            print(f'{type(record)} id #{res_data[0][0]} allready in bd')
+            print(f'This {str(record)} id #{res_data[0][0]} allready in bd')
             row_id = res_data[0][0]
         else:  # если найдено более чем одна запись - генерируем исключение, т.к. данные доллжны быть уникальны
             raise ValueError(f'Найдено больше 1-ой записи {type(record)}')
